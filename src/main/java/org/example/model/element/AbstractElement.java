@@ -1,5 +1,6 @@
 package org.example.model.element;
 
+import javafx.animation.Transition;
 import javafx.scene.Node;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
@@ -8,13 +9,14 @@ import org.example.model.Point;
 
 @Getter
 @Setter
-@NoArgsConstructor
 public abstract class AbstractElement {
 
     protected Point position;
     protected double widthX, heightY;
     protected Color color;
 
+    protected boolean isRunning = false;
+    protected Transition transition;
     protected Node node;
 
     public AbstractElement(Point position, double widthX, double heightY, Color color) {
@@ -26,7 +28,16 @@ public abstract class AbstractElement {
 
     public abstract void draw(Pane pane);
 
-    //public void erase(Pane pane);
+    public void startMove() {
+        if (isRunning) return;
+        isRunning = true;
+        transition.play();
+    }
+
+    public void stopMove() {
+        isRunning = false;
+        transition.stop();
+    }
 
     public boolean checkAffiliation(final Point point) {
         final double top = position.getY();

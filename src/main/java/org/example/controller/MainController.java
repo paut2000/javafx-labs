@@ -13,7 +13,7 @@ import org.example.model.Point;
 import org.example.model.element.AbstractElement;
 import org.example.model.element.Picture;
 import org.example.model.element.Text;
-import org.example.status.Element;
+import org.example.status.Type;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -27,7 +27,7 @@ public class MainController {
 
     private final List<AbstractElement> elements = new ArrayList<>();
 
-    private Element element;
+    private Type type;
     private File file;
     private double width = 100;
     private double height = 100;
@@ -48,11 +48,12 @@ public class MainController {
         widthLabel.setText(Double.toString(width));
     }
 
-    public void setElement(Element element) {
-        selectedLabel.setText(element.name());
-        this.element = element;
+    //когда выбираю в меню
+    public void setType(Type type) {
+        selectedLabel.setText(type.name());
+        this.type = type;
 
-        switch (element) {
+        switch (type) {
             case TEXT -> {
                 TextInputDialog dialog = new TextInputDialog();
                 dialog.setTitle("Создание текста");
@@ -67,18 +68,17 @@ public class MainController {
                     this.file = file;
                 }
             }
-            case DELETE -> {
-                infoLabel.setText("");
-            }
+            case DELETE, STOP_MOVEMENT, STAR_MOVEMENT -> infoLabel.setText("");
         }
     }
 
+    //когда кликаю мышкой
     public void onWorkspaceClick(MouseEvent mouseEvent) {
         double x = mouseEvent.getX();
         double y = mouseEvent.getY();
 
-        if (element == null) return;
-        switch (element) {
+        if (type == null) return;
+        switch (type) {
             case TEXT -> {
                 Text text = new Text(new Point(x, y), width, height, color, infoLabel.getText());
                 text.draw(workspace);
@@ -98,9 +98,23 @@ public class MainController {
                     }
                 });
             }
+            case STAR_MOVEMENT -> {
+                elements.forEach(element -> {
+                    if (element.checkAffiliation(new Point(x, y))) {
+                        element.startMove();
+                    }
+                });
+            }
+            case STOP_MOVEMENT -> {
+                elements.forEach(element -> {
+                    if (element.checkAffiliation(new Point(x, y))) {
+                        element.stopMove();
+                    }
+                });
+            }
         }
 
-        LOGGER.info("Click " + element + ": x = " + x + " y = " + y);
+        LOGGER.info("Click " + type + ": x = " + x + " y = " + y);
     }
 
     public void setWidth(double width) {
@@ -112,4 +126,13 @@ public class MainController {
         this.height = height;
         heightLabel.setText(Double.toString(height));
     }
+
+    public void startMovementAll() {
+        elements.forEach(AbstractElement::startMove);
+    }
+
+    public void stopMovementAll() {
+        elements.forEach(AbstractElement::stopMove);
+    }
+
 }

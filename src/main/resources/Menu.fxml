@@ -22,6 +22,13 @@
             <MenuItem fx:id="widthMenuItem" mnemonicParsing="false" text="Ширина" />
             <MenuItem fx:id="heightMenuItem" mnemonicParsing="false" text="Высота" />
         </Menu>
+
+        <Menu mnemonicParsing="false" text="Движение">
+            <MenuItem fx:id="startAllMenuItem" mnemonicParsing="false" text="Запуск всех" />
+            <MenuItem fx:id="stopAllMenuItem" mnemonicParsing="false" text="Остановка всех" />
+            <MenuItem fx:id="startOneMenuItem" mnemonicParsing="false" text="Запуск одного" />
+            <MenuItem fx:id="stopOneMenuItem" mnemonicParsing="false" text="Остановка одного" />
+        </Menu>
     </MenuBar>
 
    <ColorPicker fx:id="colorPicker">

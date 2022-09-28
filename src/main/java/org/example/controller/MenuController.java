@@ -2,13 +2,12 @@ package org.example.controller;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.ColorPicker;
-import javafx.scene.control.Dialog;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.input.KeyCombination;
 import lombok.Setter;
 import org.example.App;
-import org.example.status.Element;
+import org.example.status.Type;
 
 import java.util.Optional;
 import java.util.logging.Logger;
@@ -25,25 +24,29 @@ public class MenuController {
     @FXML private MenuItem textMenuItem;
     @FXML private MenuItem pictureMenuItem;
     @FXML private MenuItem deleteMenuItem;
+    @FXML public MenuItem startAllMenuItem;
+    @FXML public MenuItem stopAllMenuItem;
+    @FXML public MenuItem startOneMenuItem;
+    @FXML public MenuItem stopOneMenuItem;
 
     @FXML
     void initialize() {
         textMenuItem.setAccelerator(KeyCombination.keyCombination("Ctrl+T"));
         textMenuItem.setOnAction(event -> {
             LOGGER.info("Menu item \"Element/Text\" is selected");
-            mainController.setElement(Element.TEXT);
+            mainController.setType(Type.TEXT);
         });
 
         pictureMenuItem.setAccelerator(KeyCombination.keyCombination("Ctrl+P"));
         pictureMenuItem.setOnAction(event -> {
             LOGGER.info("Menu item \"Element/Picture\" is selected");
-            mainController.setElement(Element.PICTURE);
+            mainController.setType(Type.PICTURE);
         });
 
         deleteMenuItem.setAccelerator(KeyCombination.keyCombination("Ctrl+D"));
         deleteMenuItem.setOnAction(event -> {
             LOGGER.info("Menu item \"Element/Delete\" is selected");
-            mainController.setElement(Element.DELETE);
+            mainController.setType(Type.DELETE);
         });
 
         widthMenuItem.setAccelerator(KeyCombination.keyCombination("Ctrl+W"));
@@ -73,7 +76,28 @@ public class MenuController {
         });
 
         colorPicker.setOnAction(event -> {
+            LOGGER.info("Menu item \"Property/Color\" is selected");
             mainController.setColor(colorPicker.getValue());
+        });
+
+        startAllMenuItem.setOnAction(event -> {
+            LOGGER.info("Menu item \"Property/Start All\" is selected");
+            mainController.startMovementAll();
+        });
+
+        stopAllMenuItem.setOnAction(event -> {
+            LOGGER.info("Menu item \"Property/Stop All\" is selected");
+            mainController.stopMovementAll();
+        });
+
+        startOneMenuItem.setOnAction(event -> {
+            LOGGER.info("Menu item \"Property/Start One\" is selected");
+            mainController.setType(Type.STAR_MOVEMENT);
+        });
+
+        stopOneMenuItem.setOnAction(event -> {
+            LOGGER.info("Menu item \"Property/Stop One\" is selected");
+            mainController.setType(Type.STOP_MOVEMENT);
         });
     }
 

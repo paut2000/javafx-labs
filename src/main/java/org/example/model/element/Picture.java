@@ -1,11 +1,14 @@
 package org.example.model.element;
 
+import javafx.animation.ScaleTransition;
+import javafx.animation.Transition;
+import javafx.animation.TranslateTransition;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import javafx.util.Duration;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.example.App;
 import org.example.model.Point;
@@ -16,7 +19,6 @@ import java.util.logging.Logger;
 
 @Getter
 @Setter
-@NoArgsConstructor
 public class Picture extends AbstractElement {
 
     private static final Logger LOGGER = Logger.getLogger(App.class.getName());
@@ -43,7 +45,22 @@ public class Picture extends AbstractElement {
         imageView.setX(position.getX());
         imageView.setY(position.getY());
         node = imageView;
+        transition = createScaleTransition();
 
         pane.getChildren().add(imageView);
     }
+
+    private Transition createScaleTransition() {
+        ScaleTransition translate = new ScaleTransition();
+        translate.setToX(0.5);
+        translate.setToY(0.5);
+        translate.setFromX(1);
+        translate.setFromY(1);
+        translate.setDuration(Duration.millis(1000));
+        translate.setCycleCount(-1);
+        translate.setAutoReverse(true);
+        translate.setNode(node);
+        return translate;
+    }
+
 }
