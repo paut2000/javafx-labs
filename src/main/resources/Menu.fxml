@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.ColorPicker?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.paint.Color?>
+
+<HBox alignment="CENTER_LEFT" prefHeight="0.0" prefWidth="600.0" BorderPane.alignment="CENTER" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.controller.MenuController">
+
+    <MenuBar>
+        <Menu mnemonicParsing="false" text="Элемент">
+            <MenuItem fx:id="textMenuItem" mnemonicParsing="false" text="Текст" />
+            <MenuItem fx:id="pictureMenuItem" mnemonicParsing="false" text="Изображение" />
+            <MenuItem fx:id="deleteMenuItem" mnemonicParsing="false" text="Удалить" />
+        </Menu>
+
+        <Menu mnemonicParsing="false" text="Параметры">
+            <MenuItem fx:id="widthMenuItem" mnemonicParsing="false" text="Ширина" />
+            <MenuItem fx:id="heightMenuItem" mnemonicParsing="false" text="Высота" />
+        </Menu>
+    </MenuBar>
+
+   <ColorPicker fx:id="colorPicker">
+      <value>
+         <Color />
+      </value>
+      <HBox.margin>
+         <Insets left="10.0" />
+      </HBox.margin></ColorPicker>
+
+</HBox>
