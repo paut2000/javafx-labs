@@ -1,13 +1,19 @@
 package org.example.model.element;
 
+import com.thoughtworks.xstream.annotations.XStreamConverter;
+import com.thoughtworks.xstream.annotations.XStreamOmitField;
 import javafx.animation.Transition;
 import javafx.scene.Node;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import lombok.*;
 import org.example.model.Point;
+import org.example.storing.ColorConverter;
 import org.example.storing.Storable;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.Scanner;
 
@@ -20,10 +26,17 @@ public abstract class AbstractElement implements Storable, Serializable {
 
     protected Point position;
     protected double widthX, heightY;
-    protected transient Color color;
 
+    @XStreamConverter(ColorConverter.class)
+    protected Color color;
+
+    @XStreamOmitField
     protected transient boolean isRunning = false;
+
+    @XStreamOmitField
     protected transient Transition transition;
+
+    @XStreamOmitField
     protected transient Node node;
 
     public AbstractElement(Point position, double widthX, double heightY, Color color) {
@@ -36,18 +49,37 @@ public abstract class AbstractElement implements Storable, Serializable {
     public abstract void draw(Pane pane);
 
     @Override
-    public String serialize() {
+    public String serialize() { // Текстовая сериализация
         return position.getX() + SEPARATOR + position.getY() + SEPARATOR
                 + widthX + SEPARATOR + heightY + SEPARATOR
                 + color.toString();
     }
 
     @Override
-    public void deserialize(Scanner scanner) {
+    public void deserialize(Scanner scanner) { // Текстовая десериализация
         position = new Point(Double.parseDouble(scanner.next()), Double.parseDouble(scanner.next()));
         widthX = Double.parseDouble(scanner.next());
         heightY = Double.parseDouble(scanner.next());
         color = Color.valueOf(scanner.next());
+    }
+
+    // Для бинарной сериализации/десериализации
+    // так как класс Color находится в пакете JavaFX и его нельзя изменить
+    // а чтобы применить бинарную сериализацию, нужно чтобы класс реализовывал интерфейс-метку Serializable
+    public void serializeColor(ObjectOutputStream objectOutputStream) throws IOException {
+        objectOutputStream.writeDouble(color.getRed());
+        objectOutputStream.writeDouble(color.getGreen());
+        objectOutputStream.writeDouble(color.getBlue());
+        objectOutputStream.writeDouble(color.getOpacity());
+    }
+
+    public void deserializeColor(ObjectInputStream objectInputStream) throws IOException {
+        color = new Color(
+                objectInputStream.readDouble(),
+                objectInputStream.readDouble(),
+                objectInputStream.readDouble(),
+                objectInputStream.readDouble()
+        );
     }
 
     public void startMove() {

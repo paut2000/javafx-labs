@@ -144,13 +144,13 @@ public class MainController {
     }
 
     public void serializeToXml() {
-        /*XStream xStream = new XStream();
-        String xml = xStream.toXML(elements);
-        System.out.println(xml);*/
+        serializer.serializeToXmlFile(elements);
     }
 
     public void deserializeFromXml() {
-
+        List<AbstractElement> list = serializer.deserializeFromXmlFile();
+        list.forEach(element -> element.draw(workspace));
+        elements.addAll(list);
     }
 
     public void serializeToBinary() {

@@ -1,5 +1,7 @@
 package org.example.storing;
 
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.security.AnyTypePermission;
 import org.example.App;
 import org.example.model.element.AbstractElement;
 
@@ -18,6 +20,13 @@ public class Serializer {
     private static final Logger LOGGER = Logger.getLogger(App.class.getName());
 
     private final StorableFactory factory = new StorableFactory();
+    XStream xStream = new XStream();
+
+    public Serializer() {
+        xStream.addPermission(AnyTypePermission.ANY);
+        xStream.registerConverter(new ColorConverter());
+        xStream.autodetectAnnotations(true);
+    }
 
     public void serializeToTextFile(List<? extends Storable> list) {
         try {
@@ -60,6 +69,7 @@ public class Serializer {
 
             for (AbstractElement element : list) {
                 objectOutputStream.writeObject(element);
+                element.serializeColor(objectOutputStream);
             }
             objectOutputStream.flush();
 
@@ -77,7 +87,9 @@ public class Serializer {
             ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
 
             while (fileInputStream.available() > 0) {
-                list.add((AbstractElement) objectInputStream.readObject());
+                AbstractElement element = (AbstractElement) objectInputStream.readObject();
+                element.deserializeColor(objectInputStream);
+                list.add(element);
             }
 
             objectInputStream.close();
@@ -86,6 +98,22 @@ public class Serializer {
             LOGGER.info(e.getMessage());
         }
         return list;
+    }
+
+    public void serializeToXmlFile(List<AbstractElement> list) {
+        try {
+            FileWriter writer = new FileWriter(PATH_TO_XML_FILE);
+            xStream.toXML(list, writer);
+            writer.close();
+        } catch (IOException e) {
+            LOGGER.info(e.getMessage());
+        }
+    }
+
+    public List<AbstractElement> deserializeFromXmlFile() {
+        Object o = xStream.fromXML(new File(PATH_TO_XML_FILE));
+        if (o == null) return new ArrayList<>();
+        return (List<AbstractElement>) o;
     }
 
 }

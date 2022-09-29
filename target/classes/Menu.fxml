@@ -33,14 +33,14 @@
         <Menu mnemonicParsing="false" text="Сериализация">
             <MenuItem fx:id="serializeTextMenuItem" mnemonicParsing="false" text="Текстовая" />
             <MenuItem fx:id="serializeBinaryMenuItem" mnemonicParsing="false" text="Двоичная" />
-            <MenuItem fx:id="serializeXmlMenuItem" mnemonicParsing="false" text="XML-сериализация" />
+            <MenuItem fx:id="serializeXmlMenuItem" mnemonicParsing="false" text="XML" />
             <MenuItem fx:id="serializeAllMenuItem" mnemonicParsing="false" text="Во все форматы" />
         </Menu>
 
         <Menu mnemonicParsing="false" text="Десериализация">
             <MenuItem fx:id="deserializeTextMenuItem" mnemonicParsing="false" text="Текстовая" />
             <MenuItem fx:id="deserializeBinaryMenuItem" mnemonicParsing="false" text="Двоичная" />
-            <MenuItem fx:id="deserializeXmlMenuItem" mnemonicParsing="false" text="XML-сериализация" />
+            <MenuItem fx:id="deserializeXmlMenuItem" mnemonicParsing="false" text="XML" />
         </Menu>
     </MenuBar>
 
