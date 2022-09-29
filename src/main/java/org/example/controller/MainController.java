@@ -1,5 +1,6 @@
 package org.example.controller;
 
+import com.thoughtworks.xstream.XStream;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextInputDialog;
@@ -14,8 +15,12 @@ import org.example.model.element.AbstractElement;
 import org.example.model.element.Picture;
 import org.example.model.element.Text;
 import org.example.status.Type;
+import org.example.storing.Serializer;
+import org.example.storing.Storable;
 
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -26,6 +31,7 @@ public class MainController {
     private static final Logger LOGGER = Logger.getLogger(App.class.getName());
 
     private final List<AbstractElement> elements = new ArrayList<>();
+    private final Serializer serializer = new Serializer();
 
     private Type type;
     private File file;
@@ -92,10 +98,12 @@ public class MainController {
                 }
             }
             case DELETE -> {
-                elements.forEach(element -> {
+                elements.removeIf(element -> {
                     if (element.checkAffiliation(new Point(x, y))) {
                         workspace.getChildren().remove(element.getNode());
+                        return true;
                     }
+                    return false;
                 });
             }
             case STAR_MOVEMENT -> {
@@ -133,6 +141,42 @@ public class MainController {
 
     public void stopMovementAll() {
         elements.forEach(AbstractElement::stopMove);
+    }
+
+    public void serializeToXml() {
+        /*XStream xStream = new XStream();
+        String xml = xStream.toXML(elements);
+        System.out.println(xml);*/
+    }
+
+    public void deserializeFromXml() {
+
+    }
+
+    public void serializeToBinary() {
+        serializer.serializeToBinaryFile(elements);
+    }
+
+    public void deserializeFromBinary() {
+        List<AbstractElement> list = serializer.deserializeFromBinaryFile();
+        list.forEach(element -> element.draw(workspace));
+        elements.addAll(list);
+    }
+
+    public void serializeToText() {
+        serializer.serializeToTextFile(elements);
+    }
+
+    public void deserializeFromText() {
+        List<AbstractElement> list = (List<AbstractElement>) serializer.deserializeFromTextFile();
+        list.forEach(element -> element.draw(workspace));
+        elements.addAll(list);
+    }
+
+    public void serializeToAllFormats() {
+        serializeToText();
+        serializeToBinary();
+        serializeToXml();
     }
 
 }

@@ -1,0 +1,1 @@
+org.example.model.element.Picture,/home/molner/Pictures/gay.jpg,85.6,28.8,400.0,100.0,0x000000ff;org.example.model.element.Picture,/home/molner/Pictures/Tardis_minimalistic_art.jpg,372.8,144.0,400.0,150.0,0x000000ff;org.example.model.element.Text,Пидор,344.8,35.2,400.0,150.0,0x0000ffff;org.example.model.element.Text,Пидор,512.0,51.2,400.0,150.0,0x0000ffff;

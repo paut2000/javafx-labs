@@ -2,23 +2,25 @@ package org.example.model.element;
 
 import javafx.animation.ScaleTransition;
 import javafx.animation.Transition;
-import javafx.animation.TranslateTransition;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.util.Duration;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.example.App;
 import org.example.model.Point;
 
 import java.io.File;
 import java.net.MalformedURLException;
+import java.util.Scanner;
 import java.util.logging.Logger;
 
 @Getter
 @Setter
+@NoArgsConstructor
 public class Picture extends AbstractElement {
 
     private static final Logger LOGGER = Logger.getLogger(App.class.getName());
@@ -50,6 +52,18 @@ public class Picture extends AbstractElement {
         pane.getChildren().add(imageView);
     }
 
+    @Override
+    public String serialize() {
+        return getClass().getName() + SEPARATOR + file.toString() + SEPARATOR + super.serialize() + ";";
+    }
+
+    @Override
+    public void deserialize(Scanner scanner) {
+        file = new File(scanner.next());
+        super.deserialize(scanner);
+    }
+
+
     private Transition createScaleTransition() {
         ScaleTransition translate = new ScaleTransition();
         translate.setToX(0.5);
@@ -62,5 +76,4 @@ public class Picture extends AbstractElement {
         translate.setNode(node);
         return translate;
     }
-
 }

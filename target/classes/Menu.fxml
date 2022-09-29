@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.paint.Color?>
 
-<HBox alignment="CENTER_LEFT" prefHeight="0.0" prefWidth="600.0" BorderPane.alignment="CENTER" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.controller.MenuController">
+<HBox alignment="CENTER_LEFT" prefHeight="0.0" prefWidth="800.0" BorderPane.alignment="CENTER" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.controller.MenuController">
 
     <MenuBar>
         <Menu mnemonicParsing="false" text="Элемент">
@@ -28,6 +28,19 @@
             <MenuItem fx:id="stopAllMenuItem" mnemonicParsing="false" text="Остановка всех" />
             <MenuItem fx:id="startOneMenuItem" mnemonicParsing="false" text="Запуск одного" />
             <MenuItem fx:id="stopOneMenuItem" mnemonicParsing="false" text="Остановка одного" />
+        </Menu>
+
+        <Menu mnemonicParsing="false" text="Сериализация">
+            <MenuItem fx:id="serializeTextMenuItem" mnemonicParsing="false" text="Текстовая" />
+            <MenuItem fx:id="serializeBinaryMenuItem" mnemonicParsing="false" text="Двоичная" />
+            <MenuItem fx:id="serializeXmlMenuItem" mnemonicParsing="false" text="XML-сериализация" />
+            <MenuItem fx:id="serializeAllMenuItem" mnemonicParsing="false" text="Во все форматы" />
+        </Menu>
+
+        <Menu mnemonicParsing="false" text="Десериализация">
+            <MenuItem fx:id="deserializeTextMenuItem" mnemonicParsing="false" text="Текстовая" />
+            <MenuItem fx:id="deserializeBinaryMenuItem" mnemonicParsing="false" text="Двоичная" />
+            <MenuItem fx:id="deserializeXmlMenuItem" mnemonicParsing="false" text="XML-сериализация" />
         </Menu>
     </MenuBar>
 

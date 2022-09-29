@@ -7,11 +7,15 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.util.Duration;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.example.model.Point;
 
+import java.util.Scanner;
+
 @Getter
 @Setter
+@NoArgsConstructor
 public class Text extends AbstractElement {
 
     private String text;
@@ -27,6 +31,17 @@ public class Text extends AbstractElement {
         node = label;
         transition = createRotateTransition();
         pane.getChildren().add(label);
+    }
+
+    @Override
+    public String serialize() {
+        return getClass().getName() + SEPARATOR + text + SEPARATOR + super.serialize() + ";";
+    }
+
+    @Override
+    public void deserialize(Scanner scanner) {
+        text = scanner.next();
+        super.deserialize(scanner);
     }
 
     private Transition createRotateTransition() {

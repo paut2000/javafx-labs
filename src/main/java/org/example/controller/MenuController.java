@@ -28,6 +28,13 @@ public class MenuController {
     @FXML public MenuItem stopAllMenuItem;
     @FXML public MenuItem startOneMenuItem;
     @FXML public MenuItem stopOneMenuItem;
+    @FXML public MenuItem serializeTextMenuItem;
+    @FXML public MenuItem serializeBinaryMenuItem;
+    @FXML public MenuItem serializeXmlMenuItem;
+    @FXML public MenuItem serializeAllMenuItem;
+    @FXML public MenuItem deserializeTextMenuItem;
+    @FXML public MenuItem deserializeBinaryMenuItem;
+    @FXML public MenuItem deserializeXmlMenuItem;
 
     @FXML
     void initialize() {
@@ -99,6 +106,42 @@ public class MenuController {
             LOGGER.info("Menu item \"Property/Stop One\" is selected");
             mainController.setType(Type.STOP_MOVEMENT);
         });
+
+        serializeXmlMenuItem.setOnAction(event -> {
+            LOGGER.info("Menu item \"Serialization/XML\" is selected");
+            mainController.serializeToXml();
+        });
+
+        deserializeXmlMenuItem.setOnAction(event -> {
+            LOGGER.info("Menu item \"Deserialization/XML\" is selected");
+            mainController.deserializeFromXml();
+        });
+
+        serializeBinaryMenuItem.setOnAction(event -> {
+            LOGGER.info("Menu item \"Serialization/Binary\" is selected");
+            mainController.serializeToBinary();
+        });
+
+        deserializeBinaryMenuItem.setOnAction(event -> {
+            LOGGER.info("Menu item \"Deserialization/Binary\" is selected");
+            mainController.deserializeFromBinary();
+        });
+
+        serializeTextMenuItem.setOnAction(event -> {
+            LOGGER.info("Menu item \"Serialization/Text\" is selected");
+            mainController.serializeToText();
+        });
+
+        deserializeTextMenuItem.setOnAction(event -> {
+            LOGGER.info("Menu item \"Deserialization/Text\" is selected");
+            mainController.deserializeFromText();
+        });
+
+        serializeAllMenuItem.setOnAction(event -> {
+            LOGGER.info("Menu item \"Serialization/All\" is selected");
+            mainController.serializeToAllFormats();
+        });
+
     }
 
 }
