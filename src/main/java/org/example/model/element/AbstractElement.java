@@ -1,14 +1,15 @@
 package org.example.model.element;
 
-import com.thoughtworks.xstream.annotations.XStreamConverter;
-import com.thoughtworks.xstream.annotations.XStreamOmitField;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import javafx.animation.Transition;
 import javafx.scene.Node;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
-import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.example.model.Point;
-import org.example.storing.ColorConverter;
 import org.example.storing.Storable;
 
 import java.io.IOException;
@@ -20,6 +21,7 @@ import java.util.Scanner;
 @Getter
 @Setter
 @NoArgsConstructor
+@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
 public abstract class AbstractElement implements Storable, Serializable {
 
     protected static final String SEPARATOR = ",";
@@ -27,16 +29,15 @@ public abstract class AbstractElement implements Storable, Serializable {
     protected Point position;
     protected double widthX, heightY;
 
-    @XStreamConverter(ColorConverter.class)
-    protected Color color;
+    protected transient Color color;
 
-    @XStreamOmitField
+    @JsonIgnore
     protected transient boolean isRunning = false;
 
-    @XStreamOmitField
+    @JsonIgnore
     protected transient Transition transition;
 
-    @XStreamOmitField
+    @JsonIgnore
     protected transient Node node;
 
     public AbstractElement(Point position, double widthX, double heightY, Color color) {

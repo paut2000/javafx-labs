@@ -1,6 +1,5 @@
 package org.example.controller;
 
-import com.thoughtworks.xstream.XStream;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextInputDialog;
@@ -16,11 +15,8 @@ import org.example.model.element.Picture;
 import org.example.model.element.Text;
 import org.example.status.Type;
 import org.example.storing.Serializer;
-import org.example.storing.Storable;
 
 import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;

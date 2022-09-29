@@ -1,7 +1,13 @@
 package org.example.storing;
 
-import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.security.AnyTypePermission;
+import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.fasterxml.jackson.dataformat.xml.JacksonXmlModule;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import javafx.scene.paint.Color;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.example.App;
 import org.example.model.element.AbstractElement;
 
@@ -20,12 +26,12 @@ public class Serializer {
     private static final Logger LOGGER = Logger.getLogger(App.class.getName());
 
     private final StorableFactory factory = new StorableFactory();
-    XStream xStream = new XStream();
+    private final XmlMapper xmlMapper = new XmlMapper();
 
     public Serializer() {
-        xStream.addPermission(AnyTypePermission.ANY);
-        xStream.registerConverter(new ColorConverter());
-        xStream.autodetectAnnotations(true);
+        SimpleModule simpleModule = new SimpleModule();
+        simpleModule.addDeserializer(Color.class, new ColorDeserializer());
+        xmlMapper.registerModule(simpleModule);
     }
 
     public void serializeToTextFile(List<? extends Storable> list) {
@@ -102,18 +108,27 @@ public class Serializer {
 
     public void serializeToXmlFile(List<AbstractElement> list) {
         try {
-            FileWriter writer = new FileWriter(PATH_TO_XML_FILE);
-            xStream.toXML(list, writer);
-            writer.close();
+            xmlMapper.writeValue(new File(PATH_TO_XML_FILE), new XmlObject(list));
         } catch (IOException e) {
             LOGGER.info(e.getMessage());
         }
     }
 
     public List<AbstractElement> deserializeFromXmlFile() {
-        Object o = xStream.fromXML(new File(PATH_TO_XML_FILE));
-        if (o == null) return new ArrayList<>();
-        return (List<AbstractElement>) o;
+        try {
+            XmlObject xmlObject = xmlMapper.readValue(new File(PATH_TO_XML_FILE), XmlObject.class);
+            return xmlObject.getElements();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Getter
+    @Setter
+    private static class XmlObject {
+        List<AbstractElement> elements;
     }
 
 }
