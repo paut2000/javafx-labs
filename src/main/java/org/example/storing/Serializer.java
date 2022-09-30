@@ -1,5 +1,6 @@
 package org.example.storing;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.dataformat.xml.JacksonXmlModule;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
@@ -118,6 +119,40 @@ public class Serializer {
         try {
             XmlObject xmlObject = xmlMapper.readValue(new File(PATH_TO_XML_FILE), XmlObject.class);
             return xmlObject.getElements();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public String serializeListToXmlString(List<AbstractElement> list) {
+        try {
+            return xmlMapper.writeValueAsString(new XmlObject(list));
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public List<AbstractElement> deserializeListFromXmlString(String string) {
+        try {
+            XmlObject xmlObject = xmlMapper.readValue(string, XmlObject.class);
+            return xmlObject.getElements();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public String serializeElementToXml(AbstractElement element) {
+        try {
+            return xmlMapper.writeValueAsString(element);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public AbstractElement deserializeElementFromXml(String string) {
+        try {
+            AbstractElement abstractElement = xmlMapper.readValue(string, AbstractElement.class);
+            return abstractElement;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

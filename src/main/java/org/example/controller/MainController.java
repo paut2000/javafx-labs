@@ -1,5 +1,6 @@
 package org.example.controller;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextInputDialog;
@@ -13,11 +14,11 @@ import org.example.model.Point;
 import org.example.model.element.AbstractElement;
 import org.example.model.element.Picture;
 import org.example.model.element.Text;
-import org.example.status.Type;
+import org.example.status.Singleton;
+import org.example.status.ClickType;
 import org.example.storing.Serializer;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.logging.Logger;
@@ -25,11 +26,9 @@ import java.util.logging.Logger;
 public class MainController {
 
     private static final Logger LOGGER = Logger.getLogger(App.class.getName());
-
-    private final List<AbstractElement> elements = new ArrayList<>();
     private final Serializer serializer = new Serializer();
 
-    private Type type;
+    private ClickType clickType;
     private File file;
     private double width = 100;
     private double height = 100;
@@ -48,14 +47,15 @@ public class MainController {
         workspace.setOnMouseClicked(this::onWorkspaceClick);
         heightLabel.setText(Double.toString(height));
         widthLabel.setText(Double.toString(width));
+        listenProperty();
     }
 
     //когда выбираю в меню
-    public void setType(Type type) {
-        selectedLabel.setText(type.name());
-        this.type = type;
+    public void setClickType(ClickType clickType) {
+        selectedLabel.setText(clickType.name());
+        this.clickType = clickType;
 
-        switch (type) {
+        switch (clickType) {
             case TEXT -> {
                 TextInputDialog dialog = new TextInputDialog();
                 dialog.setTitle("Создание текста");
@@ -79,22 +79,22 @@ public class MainController {
         double x = mouseEvent.getX();
         double y = mouseEvent.getY();
 
-        if (type == null) return;
-        switch (type) {
+        if (clickType == null) return;
+        switch (clickType) {
             case TEXT -> {
                 Text text = new Text(new Point(x, y), width, height, color, infoLabel.getText());
                 text.draw(workspace);
-                elements.add(text);
+                Singleton.getInstance().getElements().add(text);
             }
             case PICTURE -> {
                 if (file != null) {
                     Picture picture = new Picture(new Point(x, y), width, height, color, file);
                     picture.draw(workspace);
-                    elements.add(picture);
+                    Singleton.getInstance().getElements().add(picture);
                 }
             }
             case DELETE -> {
-                elements.removeIf(element -> {
+                Singleton.getInstance().getElements().removeIf(element -> {
                     if (element.checkAffiliation(new Point(x, y))) {
                         workspace.getChildren().remove(element.getNode());
                         return true;
@@ -103,22 +103,38 @@ public class MainController {
                 });
             }
             case STAR_MOVEMENT -> {
-                elements.forEach(element -> {
+                Singleton.getInstance().getElements().forEach(element -> {
                     if (element.checkAffiliation(new Point(x, y))) {
                         element.startMove();
                     }
                 });
             }
             case STOP_MOVEMENT -> {
-                elements.forEach(element -> {
+                Singleton.getInstance().getElements().forEach(element -> {
                     if (element.checkAffiliation(new Point(x, y))) {
                         element.stopMove();
                     }
                 });
             }
+            case SEND_OBJECT -> {
+                Singleton.getInstance().getElements().forEach(element -> {
+                    if (element.checkAffiliation(new Point(x, y))) {
+                        Singleton.getInstance().getClient().sendObject(element);
+                    }
+                });
+            }
         }
 
-        LOGGER.info("Click " + type + ": x = " + x + " y = " + y);
+        LOGGER.info("Click " + clickType + ": x = " + x + " y = " + y);
+    }
+
+    public void listenProperty() {
+        Singleton.getInstance().getStringProperty().addListener((observableValue, oldValue, newValue) -> {
+            Platform.runLater(() -> {
+                AbstractElement element = serializer.deserializeElementFromXml(newValue);
+                addElement(element);
+            });
+        });
     }
 
     public void setWidth(double width) {
@@ -132,47 +148,57 @@ public class MainController {
     }
 
     public void startMovementAll() {
-        elements.forEach(AbstractElement::startMove);
+        Singleton.getInstance().getElements().forEach(AbstractElement::startMove);
     }
 
     public void stopMovementAll() {
-        elements.forEach(AbstractElement::stopMove);
+        Singleton.getInstance().getElements().forEach(AbstractElement::stopMove);
     }
 
     public void serializeToXml() {
-        serializer.serializeToXmlFile(elements);
+        serializer.serializeToXmlFile(Singleton.getInstance().getElements());
     }
 
     public void deserializeFromXml() {
         List<AbstractElement> list = serializer.deserializeFromXmlFile();
         list.forEach(element -> element.draw(workspace));
-        elements.addAll(list);
+        Singleton.getInstance().getElements().addAll(list);
     }
 
     public void serializeToBinary() {
-        serializer.serializeToBinaryFile(elements);
+        serializer.serializeToBinaryFile(Singleton.getInstance().getElements());
     }
 
     public void deserializeFromBinary() {
         List<AbstractElement> list = serializer.deserializeFromBinaryFile();
         list.forEach(element -> element.draw(workspace));
-        elements.addAll(list);
+        Singleton.getInstance().getElements().addAll(list);
     }
 
     public void serializeToText() {
-        serializer.serializeToTextFile(elements);
+        serializer.serializeToTextFile(Singleton.getInstance().getElements());
     }
 
     public void deserializeFromText() {
         List<AbstractElement> list = (List<AbstractElement>) serializer.deserializeFromTextFile();
         list.forEach(element -> element.draw(workspace));
-        elements.addAll(list);
+        Singleton.getInstance().getElements().addAll(list);
     }
 
     public void serializeToAllFormats() {
         serializeToText();
         serializeToBinary();
         serializeToXml();
+    }
+
+    public void addElement(AbstractElement element) {
+        Singleton.getInstance().getElements().add(element);
+        element.draw(workspace);
+    }
+
+    public void addElements(List<AbstractElement> elements) {
+        Singleton.getInstance().getElements().addAll(elements);
+        elements.forEach(element -> element.draw(workspace));
     }
 
 }

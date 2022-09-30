@@ -1,14 +1,17 @@
 package org.example.controller;
 
 import javafx.fxml.FXML;
-import javafx.scene.control.ColorPicker;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.TextInputDialog;
+import javafx.scene.control.*;
 import javafx.scene.input.KeyCombination;
 import lombok.Setter;
 import org.example.App;
-import org.example.status.Type;
+import org.example.model.element.AbstractElement;
+import org.example.network.Server;
+import org.example.status.Singleton;
+import org.example.status.ClickType;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.logging.Logger;
 
@@ -16,8 +19,10 @@ public class MenuController {
 
     private static final Logger LOGGER = Logger.getLogger(App.class.getName());
 
-    @Setter
-    private MainController mainController;
+    @Setter private MainController mainController;
+    private Server server;
+
+
     @FXML private ColorPicker colorPicker;
     @FXML private MenuItem widthMenuItem;
     @FXML private MenuItem heightMenuItem;
@@ -35,25 +40,29 @@ public class MenuController {
     @FXML public MenuItem deserializeTextMenuItem;
     @FXML public MenuItem deserializeBinaryMenuItem;
     @FXML public MenuItem deserializeXmlMenuItem;
+    @FXML private CheckMenuItem serverCheckMenuItem;
+    @FXML public MenuItem selectStrangerMenuItem;
+    @FXML public MenuItem selectAllStrangerMenuItem;
+    @FXML public MenuItem selectMyMenuItem;
 
     @FXML
     void initialize() {
         textMenuItem.setAccelerator(KeyCombination.keyCombination("Ctrl+T"));
         textMenuItem.setOnAction(event -> {
             LOGGER.info("Menu item \"Element/Text\" is selected");
-            mainController.setType(Type.TEXT);
+            mainController.setClickType(ClickType.TEXT);
         });
 
         pictureMenuItem.setAccelerator(KeyCombination.keyCombination("Ctrl+P"));
         pictureMenuItem.setOnAction(event -> {
             LOGGER.info("Menu item \"Element/Picture\" is selected");
-            mainController.setType(Type.PICTURE);
+            mainController.setClickType(ClickType.PICTURE);
         });
 
         deleteMenuItem.setAccelerator(KeyCombination.keyCombination("Ctrl+D"));
         deleteMenuItem.setOnAction(event -> {
             LOGGER.info("Menu item \"Element/Delete\" is selected");
-            mainController.setType(Type.DELETE);
+            mainController.setClickType(ClickType.DELETE);
         });
 
         widthMenuItem.setAccelerator(KeyCombination.keyCombination("Ctrl+W"));
@@ -99,12 +108,12 @@ public class MenuController {
 
         startOneMenuItem.setOnAction(event -> {
             LOGGER.info("Menu item \"Property/Start One\" is selected");
-            mainController.setType(Type.STAR_MOVEMENT);
+            mainController.setClickType(ClickType.STAR_MOVEMENT);
         });
 
         stopOneMenuItem.setOnAction(event -> {
             LOGGER.info("Menu item \"Property/Stop One\" is selected");
-            mainController.setType(Type.STOP_MOVEMENT);
+            mainController.setClickType(ClickType.STOP_MOVEMENT);
         });
 
         serializeXmlMenuItem.setOnAction(event -> {
@@ -142,6 +151,42 @@ public class MenuController {
             mainController.serializeToAllFormats();
         });
 
+        serverCheckMenuItem.setOnAction(event -> {
+            if (serverCheckMenuItem.isSelected()) {
+                LOGGER.info("Menu item \"Network/Server\" is selected");
+                server = new Server();
+                server.start();
+            } else {
+                LOGGER.info("Menu item \"Network/Server\" is unselected");
+                server.shutdown();
+                server = null;
+                selectStrangerMenuItem.setDisable(true);
+            }
+        });
+
+        selectStrangerMenuItem.setOnAction(event -> {
+            int size = Singleton.getInstance().getClient().requestListSize();
+            List<String> list = new ArrayList<>();
+            for (int i = 0; i < size; i++) {
+                list.add(String.valueOf(i));
+            }
+            ChoiceDialog<String> dialog = new ChoiceDialog<>("Объекты", list);
+            dialog.setTitle("Подключение");
+            dialog.setHeaderText("Выбирите объект");
+            Optional<String> result = dialog.showAndWait();
+            result.ifPresent(s -> {
+                AbstractElement element = Singleton.getInstance().getClient().requestObject(Integer.parseInt(s));
+                mainController.addElement(element);
+            });
+        });
+
+        selectAllStrangerMenuItem.setOnAction(event -> {
+            mainController.addElements(Singleton.getInstance().getClient().requestAllObjects());
+        });
+
+        selectMyMenuItem.setOnAction(event -> {
+            mainController.setClickType(ClickType.SEND_OBJECT);
+        });
     }
 
 }

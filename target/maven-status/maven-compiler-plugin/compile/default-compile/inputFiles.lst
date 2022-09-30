@@ -1,0 +1,16 @@
+/home/molner/dev/javafx-project/src/main/java/org/example/controller/MenuController.java
+/home/molner/dev/javafx-project/src/main/java/org/example/storing/ColorDeserializer.java
+/home/molner/dev/javafx-project/src/main/java/org/example/model/element/Picture.java
+/home/molner/dev/javafx-project/src/main/java/org/example/storing/Serializer.java
+/home/molner/dev/javafx-project/src/main/java/org/example/status/Type.java
+/home/molner/dev/javafx-project/src/main/java/org/example/network/Server.java
+/home/molner/dev/javafx-project/src/main/java/org/example/storing/Storable.java
+/home/molner/dev/javafx-project/src/main/java/org/example/controller/MainController.java
+/home/molner/dev/javafx-project/src/main/java/org/example/model/element/Text.java
+/home/molner/dev/javafx-project/src/main/java/module-info.java
+/home/molner/dev/javafx-project/src/main/java/org/example/network/Connection.java
+/home/molner/dev/javafx-project/src/main/java/org/example/model/element/AbstractElement.java
+/home/molner/dev/javafx-project/src/main/java/org/example/App.java
+/home/molner/dev/javafx-project/src/main/java/org/example/storing/StorableFactory.java
+/home/molner/dev/javafx-project/src/main/java/org/example/model/Point.java
+/home/molner/dev/javafx-project/src/main/java/org/example/network/Client.java
