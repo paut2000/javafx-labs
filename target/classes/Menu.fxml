@@ -52,9 +52,9 @@
         <Menu mnemonicParsing="false" text="UDP">
             <CheckMenuItem fx:id="serverUdpCheckMenuItem" mnemonicParsing="false" text="Запустить сервер"/>
             <CheckMenuItem fx:id="clientUdpCheckMenuItem" mnemonicParsing="false" text="Запустить клиент"/>
-            <MenuItem fx:id="selectStrangerUdpMenuItem" mnemonicParsing="false" text="Выбрать чужой объект" />
-            <MenuItem fx:id="selectMyUdpMenuItem" mnemonicParsing="false" text="Выбрать свой объект" />
-            <MenuItem fx:id="selectAllStrangerUdpMenuItem" mnemonicParsing="false" text="Зпросить все объекты" />
+            <MenuItem fx:id="selectStrangerUdpMenuItem" disable="true" mnemonicParsing="false" text="Выбрать чужой объект" />
+            <MenuItem fx:id="selectMyUdpMenuItem" disable="true" mnemonicParsing="false" text="Выбрать свой объект" />
+            <MenuItem fx:id="selectAllStrangerUdpMenuItem" disable="true" mnemonicParsing="false" text="Зпросить все объекты" />
         </Menu>
     </MenuBar>
 

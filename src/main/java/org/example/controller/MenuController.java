@@ -163,11 +163,18 @@ public class MenuController {
                 LOGGER.info("Menu item \"Network/Server\" is selected");
                 serverTcp = new ServerTcp();
                 serverTcp.start();
+
+                selectStrangerMenuItem.setDisable(true);
+                selectAllStrangerMenuItem.setDisable(true);
+                selectMyMenuItem.setDisable(true);
             } else {
                 LOGGER.info("Menu item \"Network/Server\" is unselected");
                 serverTcp.shutdown();
                 serverTcp = null;
-                selectStrangerMenuItem.setDisable(true);
+
+                selectStrangerMenuItem.setDisable(false);
+                selectAllStrangerMenuItem.setDisable(false);
+                selectMyMenuItem.setDisable(false);
             }
         });
 
@@ -191,17 +198,32 @@ public class MenuController {
             if (serverUdpCheckMenuItem.isSelected()) {
                 serverUdp = new ServerUdp();
                 serverUdp.start();
+
+                clientUdpCheckMenuItem.setDisable(true);
+
             } else {
                 serverUdp.shutdown();
                 serverUdp = null;
+
+                clientUdpCheckMenuItem.setDisable(false);
             }
         });
 
         clientUdpCheckMenuItem.setOnAction(actionEvent -> {
             if (clientUdpCheckMenuItem.isSelected()) {
                 Singleton.getInstance().getClientUdp().start();
+
+                serverUdpCheckMenuItem.setDisable(true);
+                selectStrangerUdpMenuItem.setDisable(false);
+                selectMyUdpMenuItem.setDisable(false);
+                selectAllStrangerUdpMenuItem.setDisable(false);
             } else {
                 Singleton.getInstance().getClientUdp().shutdown();
+
+                serverUdpCheckMenuItem.setDisable(false);
+                selectStrangerUdpMenuItem.setDisable(true);
+                selectMyUdpMenuItem.setDisable(true);
+                selectAllStrangerUdpMenuItem.setDisable(true);
             }
         });
 
