@@ -6,7 +6,9 @@ import javafx.scene.input.KeyCombination;
 import lombok.Setter;
 import org.example.App;
 import org.example.model.element.AbstractElement;
-import org.example.network.Server;
+import org.example.network.tcp.ServerTcp;
+import org.example.network.udp.ClientUdp;
+import org.example.network.udp.ServerUdp;
 import org.example.status.Singleton;
 import org.example.status.ClickType;
 
@@ -20,8 +22,8 @@ public class MenuController {
     private static final Logger LOGGER = Logger.getLogger(App.class.getName());
 
     @Setter private MainController mainController;
-    private Server server;
-
+    private ServerTcp serverTcp;
+    private ServerUdp serverUdp;
 
     @FXML private ColorPicker colorPicker;
     @FXML private MenuItem widthMenuItem;
@@ -29,21 +31,26 @@ public class MenuController {
     @FXML private MenuItem textMenuItem;
     @FXML private MenuItem pictureMenuItem;
     @FXML private MenuItem deleteMenuItem;
-    @FXML public MenuItem startAllMenuItem;
-    @FXML public MenuItem stopAllMenuItem;
-    @FXML public MenuItem startOneMenuItem;
-    @FXML public MenuItem stopOneMenuItem;
-    @FXML public MenuItem serializeTextMenuItem;
-    @FXML public MenuItem serializeBinaryMenuItem;
-    @FXML public MenuItem serializeXmlMenuItem;
-    @FXML public MenuItem serializeAllMenuItem;
-    @FXML public MenuItem deserializeTextMenuItem;
-    @FXML public MenuItem deserializeBinaryMenuItem;
-    @FXML public MenuItem deserializeXmlMenuItem;
+    @FXML private MenuItem startAllMenuItem;
+    @FXML private MenuItem stopAllMenuItem;
+    @FXML private MenuItem startOneMenuItem;
+    @FXML private MenuItem stopOneMenuItem;
+    @FXML private MenuItem serializeTextMenuItem;
+    @FXML private MenuItem serializeBinaryMenuItem;
+    @FXML private MenuItem serializeXmlMenuItem;
+    @FXML private MenuItem serializeAllMenuItem;
+    @FXML private MenuItem deserializeTextMenuItem;
+    @FXML private MenuItem deserializeBinaryMenuItem;
+    @FXML private MenuItem deserializeXmlMenuItem;
     @FXML private CheckMenuItem serverCheckMenuItem;
-    @FXML public MenuItem selectStrangerMenuItem;
-    @FXML public MenuItem selectAllStrangerMenuItem;
-    @FXML public MenuItem selectMyMenuItem;
+    @FXML private MenuItem selectStrangerMenuItem;
+    @FXML private MenuItem selectAllStrangerMenuItem;
+    @FXML private MenuItem selectMyMenuItem;
+    @FXML private CheckMenuItem serverUdpCheckMenuItem;
+    @FXML private CheckMenuItem clientUdpCheckMenuItem;
+    @FXML private MenuItem selectStrangerUdpMenuItem;
+    @FXML private MenuItem selectMyUdpMenuItem;
+    @FXML private MenuItem selectAllStrangerUdpMenuItem;
 
     @FXML
     void initialize() {
@@ -154,39 +161,76 @@ public class MenuController {
         serverCheckMenuItem.setOnAction(event -> {
             if (serverCheckMenuItem.isSelected()) {
                 LOGGER.info("Menu item \"Network/Server\" is selected");
-                server = new Server();
-                server.start();
+                serverTcp = new ServerTcp();
+                serverTcp.start();
             } else {
                 LOGGER.info("Menu item \"Network/Server\" is unselected");
-                server.shutdown();
-                server = null;
+                serverTcp.shutdown();
+                serverTcp = null;
                 selectStrangerMenuItem.setDisable(true);
             }
         });
 
         selectStrangerMenuItem.setOnAction(event -> {
-            int size = Singleton.getInstance().getClient().requestListSize();
-            List<String> list = new ArrayList<>();
-            for (int i = 0; i < size; i++) {
-                list.add(String.valueOf(i));
-            }
-            ChoiceDialog<String> dialog = new ChoiceDialog<>("Объекты", list);
-            dialog.setTitle("Подключение");
-            dialog.setHeaderText("Выбирите объект");
-            Optional<String> result = dialog.showAndWait();
-            result.ifPresent(s -> {
-                AbstractElement element = Singleton.getInstance().getClient().requestObject(Integer.parseInt(s));
+            int size = Singleton.getInstance().getClientTcp().requestListSize();
+            selectObjectDialog(size).ifPresent(s -> {
+                AbstractElement element = Singleton.getInstance().getClientTcp().requestObject(Integer.parseInt(s));
                 mainController.addElement(element);
             });
         });
 
         selectAllStrangerMenuItem.setOnAction(event -> {
-            mainController.addElements(Singleton.getInstance().getClient().requestAllObjects());
+            mainController.addElements(Singleton.getInstance().getClientTcp().requestAllObjects());
         });
 
         selectMyMenuItem.setOnAction(event -> {
-            mainController.setClickType(ClickType.SEND_OBJECT);
+            mainController.setClickType(ClickType.SEND_OBJECT_TCP);
         });
+
+        serverUdpCheckMenuItem.setOnAction(actionEvent -> {
+            if (serverUdpCheckMenuItem.isSelected()) {
+                serverUdp = new ServerUdp();
+                serverUdp.start();
+            } else {
+                serverUdp.shutdown();
+                serverUdp = null;
+            }
+        });
+
+        clientUdpCheckMenuItem.setOnAction(actionEvent -> {
+            if (clientUdpCheckMenuItem.isSelected()) {
+                Singleton.getInstance().getClientUdp().start();
+            } else {
+                Singleton.getInstance().getClientUdp().shutdown();
+            }
+        });
+
+        selectStrangerUdpMenuItem.setOnAction(actionEvent -> {
+            int size = Singleton.getInstance().getClientUdp().requestListSize();
+            selectObjectDialog(size).ifPresent(s -> {
+                AbstractElement element = Singleton.getInstance().getClientUdp().requestObject(Integer.parseInt(s));
+                mainController.addElement(element);
+            });
+        });
+
+        selectMyUdpMenuItem.setOnAction(actionEvent -> {
+            mainController.setClickType(ClickType.SEND_OBJECT_UDP);
+        });
+
+        selectAllStrangerUdpMenuItem.setOnAction(actionEvent -> {
+            mainController.addElements(Singleton.getInstance().getClientUdp().requestAllObjects());
+        });
+    }
+
+    private Optional<String> selectObjectDialog(int size) {
+        List<String> list = new ArrayList<>();
+        for (int i = 0; i < size; i++) {
+            list.add(String.valueOf(i));
+        }
+        ChoiceDialog<String> dialog = new ChoiceDialog<>("Объекты", list);
+        dialog.setTitle("Подключение");
+        dialog.setHeaderText("Выбирите объект");
+        return dialog.showAndWait();
     }
 
 }

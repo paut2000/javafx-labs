@@ -1,8 +1,5 @@
-package org.example.network;
+package org.example.network.tcp;
 
-import lombok.Getter;
-import lombok.Setter;
-import org.example.controller.MainController;
 import org.example.model.element.AbstractElement;
 import org.example.status.Singleton;
 import org.example.storing.Serializer;
@@ -34,9 +31,9 @@ public class Connection extends Thread {
 
     @Override
     public void run() {
-        Command command = Command.valueOf(scanner.nextLine());
+        CommandTcp commandTcp = CommandTcp.valueOf(scanner.nextLine());
         
-        switch (command) {
+        switch (commandTcp) {
             case REQUEST_LIST_SIZE -> {
                 writer.println(Singleton.getInstance().getElements().size());
             }
@@ -48,7 +45,8 @@ public class Connection extends Thread {
                 writer.println(serializer.serializeListToXmlString(Singleton.getInstance().getElements()));
             }
             case SEND_OBJECT -> {
-                Singleton.getInstance().getStringProperty().set(scanner.nextLine());
+                AbstractElement element = serializer.deserializeElementFromXml(scanner.nextLine());
+                Singleton.getInstance().getOneElementProperty().set(element);
             }
         }
 

@@ -1,25 +1,20 @@
-package org.example.network;
-
-import lombok.Getter;
-import org.example.controller.MainController;
+package org.example.network.tcp;
 
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Logger;
 
-public class Server extends Thread {
+public class ServerTcp extends Thread {
 
-    private static final Logger LOGGER = Logger.getLogger(Server.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(ServerTcp.class.getName());
     private static final int PORT = 8080;
 
     private ServerSocket serverSocket;
     private boolean isRunning;
     private int id = 0;
 
-    public Server() {
+    public ServerTcp() {
         setDaemon(true);
     }
 

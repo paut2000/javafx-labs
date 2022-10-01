@@ -1,4 +1,4 @@
-package org.example.network;
+package org.example.network.tcp;
 
 import org.example.model.element.AbstractElement;
 import org.example.storing.Serializer;
@@ -9,7 +9,7 @@ import java.net.Socket;
 import java.util.List;
 import java.util.Scanner;
 
-public class Client {
+public class ClientTcp {
 
     private PrintWriter writer;
     private Scanner scanner;
@@ -20,7 +20,7 @@ public class Client {
     public int requestListSize() {
         open();
 
-        writer.println(Command.REQUEST_LIST_SIZE);
+        writer.println(CommandTcp.REQUEST_LIST_SIZE);
         writer.flush();
         waiting();
         int size = Integer.parseInt(scanner.next());
@@ -33,7 +33,7 @@ public class Client {
     public AbstractElement requestObject(int id) {
         open();
 
-        writer.println(Command.REQUEST_OBJECT);
+        writer.println(CommandTcp.REQUEST_OBJECT);
         writer.println(id);
         writer.flush();
         waiting();
@@ -47,7 +47,7 @@ public class Client {
     public List<AbstractElement> requestAllObjects() {
         open();
 
-        writer.println(Command.REQUEST_ALL_OBJECTS);
+        writer.println(CommandTcp.REQUEST_ALL_OBJECTS);
         writer.flush();
         waiting();
         List<AbstractElement> objects = serializer.deserializeListFromXmlString(scanner.nextLine());
@@ -60,7 +60,7 @@ public class Client {
     public void sendObject(AbstractElement element) {
         open();
 
-        writer.println(Command.SEND_OBJECT);
+        writer.println(CommandTcp.SEND_OBJECT);
         writer.println(serializer.serializeElementToXml(element));
         writer.flush();
 

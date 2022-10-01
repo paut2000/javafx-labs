@@ -116,10 +116,17 @@ public class MainController {
                     }
                 });
             }
-            case SEND_OBJECT -> {
+            case SEND_OBJECT_TCP -> {
                 Singleton.getInstance().getElements().forEach(element -> {
                     if (element.checkAffiliation(new Point(x, y))) {
-                        Singleton.getInstance().getClient().sendObject(element);
+                        Singleton.getInstance().getClientTcp().sendObject(element);
+                    }
+                });
+            }
+            case SEND_OBJECT_UDP -> {
+                Singleton.getInstance().getElements().forEach(element -> {
+                    if (element.checkAffiliation(new Point(x, y))) {
+                        Singleton.getInstance().getClientUdp().sendObject(element);
                     }
                 });
             }
@@ -129,10 +136,9 @@ public class MainController {
     }
 
     public void listenProperty() {
-        Singleton.getInstance().getStringProperty().addListener((observableValue, oldValue, newValue) -> {
+        Singleton.getInstance().getOneElementProperty().addListener((observableValue, oldValue, newValue) -> {
             Platform.runLater(() -> {
-                AbstractElement element = serializer.deserializeElementFromXml(newValue);
-                addElement(element);
+                addElement(newValue);
             });
         });
     }

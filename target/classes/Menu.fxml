@@ -43,11 +43,18 @@
             <MenuItem fx:id="deserializeBinaryMenuItem" mnemonicParsing="false" text="Двоичная" />
             <MenuItem fx:id="deserializeXmlMenuItem" mnemonicParsing="false" text="XML" />
         </Menu>
-        <Menu mnemonicParsing="false" text="Сеть">
+        <Menu mnemonicParsing="false" text="TCP">
             <CheckMenuItem fx:id="serverCheckMenuItem" mnemonicParsing="false" text="Запустить сервер"/>
             <MenuItem fx:id="selectStrangerMenuItem" mnemonicParsing="false" text="Выбрать чужой объект" />
             <MenuItem fx:id="selectMyMenuItem" mnemonicParsing="false" text="Выбрать свой объект" />
             <MenuItem fx:id="selectAllStrangerMenuItem" mnemonicParsing="false" text="Зпросить все объекты" />
+        </Menu>
+        <Menu mnemonicParsing="false" text="UDP">
+            <CheckMenuItem fx:id="serverUdpCheckMenuItem" mnemonicParsing="false" text="Запустить сервер"/>
+            <CheckMenuItem fx:id="clientUdpCheckMenuItem" mnemonicParsing="false" text="Запустить клиент"/>
+            <MenuItem fx:id="selectStrangerUdpMenuItem" mnemonicParsing="false" text="Выбрать чужой объект" />
+            <MenuItem fx:id="selectMyUdpMenuItem" mnemonicParsing="false" text="Выбрать свой объект" />
+            <MenuItem fx:id="selectAllStrangerUdpMenuItem" mnemonicParsing="false" text="Зпросить все объекты" />
         </Menu>
     </MenuBar>
 
